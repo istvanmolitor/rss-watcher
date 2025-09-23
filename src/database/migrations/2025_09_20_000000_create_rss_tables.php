@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('rss_feeds', function (Blueprint $table) {
             $table->id();
+            $table->boolean('enabled')->default(false);
             $table->string('name')->unique();
             $table->string('url');
             $table->timestamp('last_fetched_at')->nullable();

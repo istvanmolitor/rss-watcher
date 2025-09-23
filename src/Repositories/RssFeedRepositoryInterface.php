@@ -10,5 +10,7 @@ interface RssFeedRepositoryInterface
     /** @return Collection<int,RssFeed> */
     public function all(): Collection;
 
+    public function getEnabledFeeds(): Collection;
+
     public function touchFetchedAt(RssFeed $feed): void;
 }

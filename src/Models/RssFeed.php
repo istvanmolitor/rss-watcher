@@ -11,10 +11,14 @@ class RssFeed extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'url', 'last_fetched_at',
+        'enabled',
+        'name',
+        'url',
+        'last_fetched_at',
     ];
 
     protected $casts = [
+        'enabled' => 'boolean',
         'last_fetched_at' => 'datetime',
     ];
 

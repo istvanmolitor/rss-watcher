@@ -45,17 +45,19 @@ class RssWatcherService
 
         $newGuids = [];
         foreach ($feedItems->get_items() as $feedItem) {
-            $guid = $feedItem->get_guid();
-            $item = $this->saveItem(
-                $guid,
-                $feedItem->get_title(),
-                $feedItem->get_permalink(),
-                $feedItem->get_description(),
-                $feedItem->get_date('Y-m-d H:i:s')
-            );
+            if($feedItem) {;
+                $guid = $feedItem->get_guid();
+                $item = $this->saveItem(
+                    $guid,
+                    $feedItem->get_title(),
+                    $feedItem->get_permalink(),
+                    $feedItem->get_description(),
+                    $feedItem->get_date('Y-m-d H:i:s')
+                );
 
-            if($item) {
-                $newGuids[$guid] = $item;
+                if ($item) {
+                    $newGuids[$guid] = $item;
+                }
             }
         }
 
