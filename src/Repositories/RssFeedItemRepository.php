@@ -2,8 +2,7 @@
 
 namespace Molitor\RssWatcher\Repositories;
 
-use Molitor\RssWatcher\Events\RssFeedItemCreated;
-use Molitor\RssWatcher\Events\RssFeedItemChanged;
+use Illuminate\Support\Collection;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 
@@ -16,43 +15,38 @@ class RssFeedItemRepository implements RssFeedItemRepositoryInterface
         $this->rssFeedItem = new RssFeedItem();
     }
 
-    public function getByGuid(RssFeed $rssFeed, string $guid): null|RssFeedItem
+    public function createRssFeedItem(RssFeed $feed, string $guid, string $title, string $link, string $description, string $publishedAt): RssFeedItem
     {
-        return $this->rssFeedItem->where('rss_feed_id', $rssFeed->id)->where('guid', $guid)->first();
+        return $this->rssFeedItem->create([
+            'rss_feed_id' => $feed->id,
+            'guid' => $guid,
+            'title' => $title,
+            'link' => $link,
+            'description' => $description,
+            'published_at' => $publishedAt,
+        ]);
     }
 
-    public function getExistingLinksByFeed(RssFeed $feed): array
+    public function updateRssFeedItem(RssFeedItem $item, string $title, string $link, string $description, string $publishedAt): RssFeedItem
     {
-        return RssFeedItem::where('rss_feed_id', $feed->id)->pluck('link')->all();
-    }
-
-    public function getExistingIdsByGuidForFeed(RssFeed $feed): array
-    {
-        return RssFeedItem::where('rss_feed_id', $feed->id)
-            ->whereNotNull('guid')
-            ->pluck('id', 'guid')
-            ->all();
-    }
-
-    public function create(array $data): RssFeedItem
-    {
-        $item = RssFeedItem::create($data);
-
-        RssFeedItemChanged::dispatch('created', [$item->id]);
+        $item->fill([
+            'title' => $title,
+            'link' => $link,
+            'description' => $description,
+            'published_at' => $publishedAt,
+        ]);
+        $item->save();
         return $item;
     }
 
-    public function updateById(int $id, array $data): void
+    public function getByFeed(RssFeed $feed): Collection
     {
-        RssFeedItem::where('id', $id)->update($data);
-        RssFeedItemChanged::dispatch('updated', [$id]);
+        return $this->rssFeedItem->where('rss_feed_id', $feed->id)->get();
     }
 
-    public function updateByFeedAndLink(RssFeed $feed, string $link, array $data): void
+    public function deleteRssFeedItem(RssFeedItem $item): bool
     {
-        RssFeedItem::where('rss_feed_id', $feed->id)
-            ->where('link', $link)
-            ->update($data);
-        RssFeedItemChanged::dispatch('updated', null, ['rss_feed_id' => $feed->id, 'link' => $link]);
+        $item->delete();
+        return true;
     }
 }

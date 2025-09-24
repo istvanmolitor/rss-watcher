@@ -19,8 +19,7 @@ return new class extends Migration {
         Schema::create('rss_feed_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rss_feed_id')->constrained('rss_feeds')->cascadeOnDelete();
-            $table->string('guid')->nullable()->index();
-            $table->string('hash', 32);
+            $table->string('guid');
             $table->string('title')->nullable();
             $table->string('link')->unique();
             $table->text('description')->nullable();

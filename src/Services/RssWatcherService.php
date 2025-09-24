@@ -4,6 +4,7 @@ namespace Molitor\RssWatcher\Services;
 
 use Molitor\RssWatcher\Events\RssFeedItemCreated;
 use Molitor\RssWatcher\Events\RssFeedItemChanged;
+use Molitor\RssWatcher\Events\RssFeedItemDeleted;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
@@ -27,7 +28,7 @@ class RssWatcherService
     {
         $this->oldItems = [];
         /** @var RssFeedItem $item */
-        foreach ($this->feed->items() as $item) {
+        foreach ($this->rssFeedItemRepository->getByFeed($this->feed) as $item) {
             $this->oldItems[$item->guid] = $item;
         }
     }
@@ -45,8 +46,8 @@ class RssWatcherService
 
         $newGuids = [];
         foreach ($feedItems->get_items() as $feedItem) {
-            if($feedItem) {;
-                $guid = $feedItem->get_guid();
+            if($feedItem) {
+                $guid = $feedItem->get_permalink();
                 $item = $this->saveItem(
                     $guid,
                     $feedItem->get_title(),
@@ -61,7 +62,7 @@ class RssWatcherService
             }
         }
 
-        foreach (array_diff(array_values($this->oldItems), $newGuids) as $guid) {
+        foreach (array_keys(($this->oldItems), array_keys($newGuids)) as $guid) {
             $this->deleteItem($guid);
         }
 
@@ -108,7 +109,7 @@ class RssWatcherService
             }
         }
         else {
-            $item = $this->rssFeedItemRepository->createRssFeedItem($guid, $title, $link, $description, $publishedAt);
+            $item = $this->rssFeedItemRepository->createRssFeedItem($this->feed, $guid, $title, $link, $description, $publishedAt);
             $this->oldItems[$guid] = $item;
             event(new RssFeedItemCreated($item));
         }
@@ -118,10 +119,11 @@ class RssWatcherService
 
     protected function deleteItem(string $guid): bool
     {
-        if(array_key_exists($guid, $this->oldItems)) {
+        if(!array_key_exists($guid, $this->oldItems)) {
             return false;
         }
         $item = $this->oldItems[$guid];
+        event(new RssFeedItemDeleted($item));
         $this->rssFeedItemRepository->deleteRssFeedItem($item);
         if(array_key_exists($guid, $this->oldItems)) {
             unset($this->oldItems[$guid]);

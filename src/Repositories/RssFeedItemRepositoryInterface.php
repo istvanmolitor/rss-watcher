@@ -2,24 +2,17 @@
 
 namespace Molitor\RssWatcher\Repositories;
 
-use Illuminate\Support\Collection;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
+use Illuminate\Support\Collection;
 
 interface RssFeedItemRepositoryInterface
 {
-    /** @return string[] */
-    public function getExistingLinksByFeed(RssFeed $feed): array;
+    public function getByFeed(RssFeed $feed): Collection;
 
-    /** @return array<string,int> guid => id */
-    public function getExistingIdsByGuidForFeed(RssFeed $feed): array;
+    public function createRssFeedItem(RssFeed $feed, string $guid, string $title, string $link, string $description, string $publishedAt): RssFeedItem;
 
-    /** Create a new item */
-    public function create(array $data): RssFeedItem;
+    public function updateRssFeedItem(RssFeedItem $item, string $title, string $link, string $description, string $publishedAt): RssFeedItem;
 
-    /** Update item by id */
-    public function updateById(int $id, array $data): void;
-
-    /** Update by feed and link */
-    public function updateByFeedAndLink(RssFeed $feed, string $link, array $data): void;
+    public function deleteRssFeedItem(RssFeedItem $item): bool;
 }
