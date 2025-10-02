@@ -11,7 +11,7 @@ class RssFeedItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'rss_feed_id', 'guid', 'title', 'link', 'description', 'enclosure', 'published_at',
+        'rss_feed_id', 'guid', 'title', 'link', 'description', 'image', 'published_at',
     ];
 
     protected $casts = [

@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('title')->nullable();
             $table->string('link')->unique();
             $table->text('description')->nullable();
-            $table->string('enclosure')->nullable();
+            $table->string('image')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });

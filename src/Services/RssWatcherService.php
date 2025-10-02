@@ -43,6 +43,15 @@ class RssWatcherService
         return strip_tags(trim($item->get_description()));
     }
 
+    protected function getImageFromFeedItem($item): string|null
+    {
+        $enclosures = $item->get_enclosures();
+        if(count($enclosures) > 0) {
+            return $enclosures[0]->link;
+        }
+        return null;
+    }
+
     public function fetchFeed(RssFeed $feed): void
     {
         $feedItems = FeedsFacade::make($feed->url);
@@ -64,7 +73,7 @@ class RssWatcherService
                         $feedItem->get_title(),
                         $feedItem->get_permalink(),
                         $this->getDescriptionFromFeedItem($feedItem),
-                        null,
+                        $this->getImageFromFeedItem($feedItem),
                         $feedItem->get_date('Y-m-d H:i:s')
                     );
 
@@ -99,31 +108,31 @@ class RssWatcherService
         return $this->feed !== null && array_key_exists($guid, $this->oldItems);
     }
 
-    protected function getHash(string $title, string $link, string $description, string|null $enclosure, string $publishedAt): string
+    protected function getHash(string $title, string $link, string $description, string|null $image, string $publishedAt): string
     {
-        return md5(serialize([$title, $link, $description, $enclosure, $publishedAt]));
+        return md5(serialize([$title, $link, $description, $image, $publishedAt]));
     }
 
     protected function getHashByItem(RssFeedItem $rssFeedItem): string
     {
-        return $this->getHash($rssFeedItem->title, $rssFeedItem->link, $rssFeedItem->description, $rssFeedItem->enclosure, $rssFeedItem->published_at);
+        return $this->getHash($rssFeedItem->title, $rssFeedItem->link, $rssFeedItem->description, $rssFeedItem->image, $rssFeedItem->published_at);
     }
 
-    protected function saveItem(string $guid, string $title, string $link, string $description, string|null $enclosure ,string $publishedAt): RssFeedItem
+    protected function saveItem(string $guid, string $title, string $link, string $description, string|null $image ,string $publishedAt): RssFeedItem
     {
         if($this->isItemExists($guid)) {
             /** @var RssFeedItem $item */
             $item = $this->oldItems[$guid];
-            $hash = $this->getHash($title, $link, $description, $enclosure, $publishedAt);
+            $hash = $this->getHash($title, $link, $description, $image, $publishedAt);
             $oldHash = $this->getHashByItem($item);
 
             if($oldHash !== $hash) {
-                $this->rssFeedItemRepository->updateRssFeedItem($item, $title, $link, $description, $enclosure, $publishedAt);
+                $this->rssFeedItemRepository->updateRssFeedItem($item, $title, $link, $description, $image, $publishedAt);
                 event(new RssFeedItemChangedEvent($item));
             }
         }
         else {
-            $item = $this->rssFeedItemRepository->createRssFeedItem($this->feed, $guid, $title, $link, $description, $enclosure, $publishedAt);
+            $item = $this->rssFeedItemRepository->createRssFeedItem($this->feed, $guid, $title, $link, $description, $image, $publishedAt);
             event(new RssFeedItemCreatedEvent($item));
         }
         return $item;
