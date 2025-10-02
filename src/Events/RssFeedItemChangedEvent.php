@@ -10,8 +10,6 @@ class RssFeedItemChangedEvent
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(
-        public RssFeedItem $rssFeedItem
-    ) {
+    public function __construct(public RssFeedItem $item) {
     }
 }

@@ -38,6 +38,11 @@ class RssWatcherService
         return trim($item->get_permalink());
     }
 
+    protected function getDescriptionFromFeedItem($item): string
+    {
+        return strip_tags(trim($item->get_description()));
+    }
+
     public function fetchFeed(RssFeed $feed): void
     {
         $feedItems = FeedsFacade::make($feed->url);
@@ -58,7 +63,7 @@ class RssWatcherService
                         $guid,
                         $feedItem->get_title(),
                         $feedItem->get_permalink(),
-                        $feedItem->get_description(),
+                        $this->getDescriptionFromFeedItem($feedItem),
                         null,
                         $feedItem->get_date('Y-m-d H:i:s')
                     );
