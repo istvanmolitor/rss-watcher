@@ -15,7 +15,7 @@ class RssFeedItemRepository implements RssFeedItemRepositoryInterface
         $this->rssFeedItem = new RssFeedItem();
     }
 
-    public function createRssFeedItem(RssFeed $feed, string $guid, string $title, string $link, string $description, string $publishedAt): RssFeedItem
+    public function createRssFeedItem(RssFeed $feed, string $guid, string $title, string $link, string $description, string|null $enclosure, string $publishedAt): RssFeedItem
     {
         return $this->rssFeedItem->create([
             'rss_feed_id' => $feed->id,
@@ -27,7 +27,7 @@ class RssFeedItemRepository implements RssFeedItemRepositoryInterface
         ]);
     }
 
-    public function updateRssFeedItem(RssFeedItem $item, string $title, string $link, string $description, string $publishedAt): RssFeedItem
+    public function updateRssFeedItem(RssFeedItem $item, string $title, string $link, string $description, string|null $enclosure, string $publishedAt): RssFeedItem
     {
         $item->fill([
             'title' => $title,

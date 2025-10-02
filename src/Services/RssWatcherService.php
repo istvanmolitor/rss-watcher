@@ -2,9 +2,9 @@
 
 namespace Molitor\RssWatcher\Services;
 
-use Molitor\RssWatcher\Events\RssFeedItemCreated;
-use Molitor\RssWatcher\Events\RssFeedItemChanged;
-use Molitor\RssWatcher\Events\RssFeedItemDeleted;
+use Molitor\RssWatcher\Events\RssFeedItemCreatedEvent;
+use Molitor\RssWatcher\Events\RssFeedItemChangedEvent;
+use Molitor\RssWatcher\Events\RssFeedItemDeletedEvent;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
@@ -33,6 +33,11 @@ class RssWatcherService
         }
     }
 
+    protected function getGuidFromFeedItem($item): string
+    {
+        return trim($item->get_permalink());
+    }
+
     public function fetchFeed(RssFeed $feed): void
     {
         $feedItems = FeedsFacade::make($feed->url);
@@ -47,22 +52,26 @@ class RssWatcherService
         $newGuids = [];
         foreach ($feedItems->get_items() as $feedItem) {
             if($feedItem) {
-                $guid = $feedItem->get_permalink();
-                $item = $this->saveItem(
-                    $guid,
-                    $feedItem->get_title(),
-                    $feedItem->get_permalink(),
-                    $feedItem->get_description(),
-                    $feedItem->get_date('Y-m-d H:i:s')
-                );
+                $guid = $this->getGuidFromFeedItem($feedItem);
+                if($guid) {
+                    $item = $this->saveItem(
+                        $guid,
+                        $feedItem->get_title(),
+                        $feedItem->get_permalink(),
+                        $feedItem->get_description(),
+                        null,
+                        $feedItem->get_date('Y-m-d H:i:s')
+                    );
 
-                if ($item) {
-                    $newGuids[$guid] = $item;
+                    if ($item) {
+                        $newGuids[$guid] = $item;
+                    }
                 }
             }
         }
 
-        foreach (array_keys(($this->oldItems), array_keys($newGuids)) as $guid) {
+        $diff = array_diff(array_keys($this->oldItems), array_keys($newGuids));
+        foreach ($diff as $guid) {
             $this->deleteItem($guid);
         }
 
@@ -85,36 +94,34 @@ class RssWatcherService
         return $this->feed !== null && array_key_exists($guid, $this->oldItems);
     }
 
-    protected function getHash(string $title, string $link, string $description, string $publishedAt): string
+    protected function getHash(string $title, string $link, string $description, string|null $enclosure, string $publishedAt): string
     {
-        return md5(serialize([$title, $link, $description, $publishedAt]));
+        return md5(serialize([$title, $link, $description, $enclosure, $publishedAt]));
     }
 
     protected function getHashByItem(RssFeedItem $rssFeedItem): string
     {
-        return $this->getHash($rssFeedItem->title, $rssFeedItem->link, $rssFeedItem->description, $rssFeedItem->published_at);
+        return $this->getHash($rssFeedItem->title, $rssFeedItem->link, $rssFeedItem->description, $rssFeedItem->enclosure, $rssFeedItem->published_at);
     }
 
-    protected function saveItem(string $guid, string $title, string $link, string $description, string $publishedAt): bool
+    protected function saveItem(string $guid, string $title, string $link, string $description, string|null $enclosure ,string $publishedAt): RssFeedItem
     {
         if($this->isItemExists($guid)) {
             /** @var RssFeedItem $item */
             $item = $this->oldItems[$guid];
-            $hash = $this->getHash($title, $link, $description, $publishedAt);
+            $hash = $this->getHash($title, $link, $description, $enclosure, $publishedAt);
             $oldHash = $this->getHashByItem($item);
+
             if($oldHash !== $hash) {
-                $this->rssFeedItemRepository->updateRssFeedItem($item, $title, $link, $description, $publishedAt);
-                $this->oldItems[$guid] = $item;
-                event(new RssFeedItemChanged($item));
+                $this->rssFeedItemRepository->updateRssFeedItem($item, $title, $link, $description, $enclosure, $publishedAt);
+                event(new RssFeedItemChangedEvent($item));
             }
         }
         else {
-            $item = $this->rssFeedItemRepository->createRssFeedItem($this->feed, $guid, $title, $link, $description, $publishedAt);
-            $this->oldItems[$guid] = $item;
-            event(new RssFeedItemCreated($item));
+            $item = $this->rssFeedItemRepository->createRssFeedItem($this->feed, $guid, $title, $link, $description, $enclosure, $publishedAt);
+            event(new RssFeedItemCreatedEvent($item));
         }
-
-        return true;
+        return $item;
     }
 
     protected function deleteItem(string $guid): bool
@@ -122,12 +129,10 @@ class RssWatcherService
         if(!array_key_exists($guid, $this->oldItems)) {
             return false;
         }
+
         $item = $this->oldItems[$guid];
-        event(new RssFeedItemDeleted($item));
         $this->rssFeedItemRepository->deleteRssFeedItem($item);
-        if(array_key_exists($guid, $this->oldItems)) {
-            unset($this->oldItems[$guid]);
-        }
+        event(new RssFeedItemDeletedEvent($item));
         return true;
     }
 }

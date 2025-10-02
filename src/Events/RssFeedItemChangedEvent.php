@@ -6,11 +6,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Molitor\RssWatcher\Models\RssFeedItem;
 
-class RssFeedItemDeleted
+class RssFeedItemChangedEvent
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public RssFeedItem $item)
-    {
+    public function __construct(
+        public RssFeedItem $rssFeedItem
+    ) {
     }
 }

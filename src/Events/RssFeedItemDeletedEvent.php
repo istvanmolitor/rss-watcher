@@ -6,7 +6,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Molitor\RssWatcher\Models\RssFeedItem;
 
-class RssFeedItemCreated
+class RssFeedItemDeletedEvent
 {
     use Dispatchable, SerializesModels;
 
