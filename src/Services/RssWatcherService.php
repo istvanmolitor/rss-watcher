@@ -46,7 +46,7 @@ class RssWatcherService
     protected function getImageFromFeedItem($item): string|null
     {
         $enclosures = $item->get_enclosures();
-        if(count($enclosures) > 0) {
+        if($enclosures and count($enclosures) > 0) {
             return $enclosures[0]->link;
         }
         return null;
