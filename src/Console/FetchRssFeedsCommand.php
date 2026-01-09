@@ -10,12 +10,12 @@ use Molitor\RssWatcher\Services\RssWatcherService;
 class FetchRssFeedsCommand extends Command
 {
     protected $signature = 'rss-watcher:fetch';
-    protected $description = 'Fetch and refresh RSS feeds';
 
     public function __construct(
         protected RssFeedRepositoryInterface     $rssFeedRepository,
         protected RssFeedItemRepositoryInterface $rssFeedItemRepository
     ) {
+        $this->description = __('rss-watcher::common.console_fetch_description');
         parent::__construct();
     }
 
@@ -26,7 +26,7 @@ class FetchRssFeedsCommand extends Command
 
         $feeds = $this->rssFeedRepository->getEnabledFeeds();
         foreach ($feeds as $feed) {
-            $this->info("Fetching {$feed->name}...");
+            $this->info(__('rss-watcher::common.console_fetching', ['name' => $feed->name]));
             $service->fetchFeed($feed);
         }
 

@@ -62,7 +62,7 @@ class RssWatcherService
     {
         $feedItems = FeedsFacade::make($feed->url);
         if (!$feedItems) {
-            throw new Exception("Invalid feed: " . $feed->url);
+            throw new Exception(__('rss-watcher::common.exception_invalid_feed', ['url' => $feed->url]));
         }
 
         if(!$this->isFeedInitialized($feed)) {
