@@ -29,4 +29,9 @@ class RssFeedRepository implements RssFeedRepositoryInterface
     {
         return $this->rssFeed->where('enabled', true)->get();
     }
+
+    public function getById(int $id): ?RssFeed
+    {
+        return $this->rssFeed->find($id);
+    }
 }

@@ -5,6 +5,7 @@ namespace Molitor\RssWatcher\Services;
 use Molitor\RssWatcher\Events\RssFeedItemCreatedEvent;
 use Molitor\RssWatcher\Events\RssFeedItemChangedEvent;
 use Molitor\RssWatcher\Events\RssFeedItemDeletedEvent;
+use Molitor\RssWatcher\Jobs\FetchFeedJob;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
@@ -50,6 +51,11 @@ class RssWatcherService
             return $enclosures[0]->link;
         }
         return null;
+    }
+
+    public function queueFetchFeed(RssFeed $feed): void
+    {
+        FetchFeedJob::dispatch($feed->id);
     }
 
     public function fetchFeed(RssFeed $feed): void
