@@ -23,6 +23,11 @@ class RssWatcherServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'rss-watcher');
 
+        // Load API routes with /api prefix
+        $this->app->make(\Illuminate\Routing\Router::class)
+            ->prefix('api')
+            ->group(__DIR__ . '/../routes/api.php');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 FetchRssFeedsCommand::class,

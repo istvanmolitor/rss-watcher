@@ -22,4 +22,17 @@ class RssFeedItem extends Model
     {
         return $this->belongsTo(RssFeed::class, 'rss_feed_id');
     }
+
+    /**
+     * Compute a hash from the item's content for change detection.
+     */
+    public function computeHash(): string
+    {
+        return md5(
+            $this->title .
+            $this->link .
+            $this->description .
+            ($this->published_at ? $this->published_at->toIso8601String() : '')
+        );
+    }
 }
