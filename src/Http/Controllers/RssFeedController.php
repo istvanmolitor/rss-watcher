@@ -33,7 +33,7 @@ class RssFeedController extends Controller
         $perPage = $request->input('per_page', 15);
         $feeds = $query->paginate($perPage);
         return response()->json([
-            'data' => RssFeedResource::collection($feeds),
+            'data' => RssFeedResource::collection($feeds->items()),
             'meta' => [
                 'current_page' => $feeds->currentPage(),
                 'last_page' => $feeds->lastPage(),
