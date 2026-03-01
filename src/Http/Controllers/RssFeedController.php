@@ -6,9 +6,13 @@ use Illuminate\Routing\Controller;
 use Molitor\RssWatcher\Http\Requests\RssFeedRequest;
 use Molitor\RssWatcher\Http\Resources\RssFeedResource;
 use Molitor\RssWatcher\Models\RssFeed;
+use Molitor\RssWatcher\Services\RssWatcherService;
 use OpenApi\Attributes as OA;
 class RssFeedController extends Controller
 {
+    public function __construct(private RssWatcherService $rssWatcherService)
+    {
+    }
     #[OA\Get(
         path: "/api/rss-watcher/feeds",
         summary: "Get all RSS feeds",
@@ -94,6 +98,28 @@ class RssFeedController extends Controller
         $feed->update($request->validated());
         return response()->json(['data' => new RssFeedResource($feed)]);
     }
+    #[OA\Post(
+        path: "/api/rss-watcher/feeds/{id}/fetch",
+        summary: "Fetch RSS feed items",
+        tags: ["RSS Watcher"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(response: 200, description: "Feed fetched successfully"),
+            new OA\Response(response: 404, description: "Feed not found"),
+            new OA\Response(response: 500, description: "Fetch failed")
+        ]
+    )]
+    public function fetch(int $id): JsonResponse
+    {
+        $feed = RssFeed::findOrFail($id);
+        try {
+            $this->rssWatcherService->fetchFeed($feed);
+            return response()->json(['message' => __('rss-watcher::common.feed_fetched_successfully')]);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
     #[OA\Delete(
         path: "/api/rss-watcher/feeds/{id}",
         summary: "Delete RSS feed",

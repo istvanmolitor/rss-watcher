@@ -13,4 +13,5 @@ return [
     'console_fetch_description' => 'RSS-Feeds abrufen und aktualisieren',
     'console_fetching' => 'Abrufen: :name...',
     'exception_invalid_feed' => 'Ungültiger Feed: :url',
+    'feed_fetched_successfully' => 'Feed erfolgreich aktualisiert.',
 ];

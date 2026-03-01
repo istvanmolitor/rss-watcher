@@ -13,4 +13,5 @@ return [
     'console_fetch_description' => 'RSS csatornák lekérése és frissítése',
     'console_fetching' => 'Lekérés: :name...',
     'exception_invalid_feed' => 'Érvénytelen csatorna: :url',
+    'feed_fetched_successfully' => 'A csatorna sikeresen frissítve.',
 ];

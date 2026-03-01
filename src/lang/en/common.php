@@ -13,4 +13,5 @@ return [
     'console_fetch_description' => 'Fetch and update RSS feeds',
     'console_fetching' => 'Fetching: :name...',
     'exception_invalid_feed' => 'Invalid feed: :url',
+    'feed_fetched_successfully' => 'Feed fetched successfully.',
 ];
