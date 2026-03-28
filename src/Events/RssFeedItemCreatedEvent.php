@@ -10,7 +10,5 @@ class RssFeedItemCreatedEvent
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public RssFeedItem $item)
-    {
-    }
+    public function __construct(public RssFeedItem $item) {}
 }

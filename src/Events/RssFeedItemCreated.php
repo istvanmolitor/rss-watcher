@@ -12,7 +12,5 @@ class RssFeedItemCreated
 
     public function __construct(
         public RssFeedItem $item
-    ) {
-    }
+    ) {}
 }
-

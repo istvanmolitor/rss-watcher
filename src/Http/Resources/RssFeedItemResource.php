@@ -7,21 +7,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "RssFeedItem",
+    schema: 'RssFeedItem',
     properties: [
-        new OA\Property(property: "id", type: "integer", example: 1),
-        new OA\Property(property: "rss_feed_id", type: "integer", example: 1),
-        new OA\Property(property: "guid", type: "string", example: "https://example.com/article-1"),
-        new OA\Property(property: "title", type: "string", example: "Breaking News"),
-        new OA\Property(property: "link", type: "string", example: "https://example.com/article-1"),
-        new OA\Property(property: "description", type: "string", nullable: true),
-        new OA\Property(property: "image", type: "string", nullable: true),
-        new OA\Property(property: "published_at", type: "string", format: "date-time", nullable: true),
-        new OA\Property(property: "created_at", type: "string", format: "date-time"),
-        new OA\Property(property: "updated_at", type: "string", format: "date-time"),
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'rss_feed_id', type: 'integer', example: 1),
+        new OA\Property(property: 'guid', type: 'string', example: 'https://example.com/article-1'),
+        new OA\Property(property: 'title', type: 'string', example: 'Breaking News'),
+        new OA\Property(property: 'link', type: 'string', example: 'https://example.com/article-1'),
+        new OA\Property(property: 'description', type: 'string', nullable: true),
+        new OA\Property(property: 'image', type: 'string', nullable: true),
+        new OA\Property(property: 'published_at', type: 'string', format: 'date-time', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
         new OA\Property(
-            property: "feed",
-            ref: "#/components/schemas/RssFeed",
+            property: 'feed',
+            ref: '#/components/schemas/RssFeed',
             nullable: true
         ),
     ]
@@ -50,4 +50,3 @@ class RssFeedItemResource extends JsonResource
         ];
     }
 }
-

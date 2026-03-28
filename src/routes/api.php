@@ -16,4 +16,3 @@ Route::prefix('rss-watcher')
         // RSS Feed Items
         Route::resource('items', RssFeedItemController::class)->only(['index', 'show', 'destroy']);
     });
-

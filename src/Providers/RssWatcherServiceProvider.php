@@ -5,9 +5,9 @@ namespace Molitor\RssWatcher\Providers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
 use Molitor\RssWatcher\Console\FetchRssFeedsCommand;
-use Molitor\RssWatcher\Repositories\RssFeedRepository;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepository;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
+use Molitor\RssWatcher\Repositories\RssFeedRepository;
 use Molitor\RssWatcher\Repositories\RssFeedRepositoryInterface;
 
 class RssWatcherServiceProvider extends ServiceProvider
@@ -20,13 +20,13 @@ class RssWatcherServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'rss-watcher');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'rss-watcher');
 
         // Load API routes with /api prefix
         $this->app->make(\Illuminate\Routing\Router::class)
             ->prefix('api')
-            ->group(__DIR__ . '/../routes/api.php');
+            ->group(__DIR__.'/../routes/api.php');
 
         if ($this->app->runningInConsole()) {
             $this->commands([

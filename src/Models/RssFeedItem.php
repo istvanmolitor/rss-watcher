@@ -29,9 +29,9 @@ class RssFeedItem extends Model
     public function computeHash(): string
     {
         return md5(
-            $this->title .
-            $this->link .
-            $this->description .
+            $this->title.
+            $this->link.
+            $this->description.
             ($this->published_at ? $this->published_at->toDateTimeString() : '')
         );
     }

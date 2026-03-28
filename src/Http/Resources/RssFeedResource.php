@@ -7,16 +7,16 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "RssFeed",
+    schema: 'RssFeed',
     properties: [
-        new OA\Property(property: "id", type: "integer", example: 1),
-        new OA\Property(property: "name", type: "string", example: "Tech News"),
-        new OA\Property(property: "url", type: "string", example: "https://example.com/feed.xml"),
-        new OA\Property(property: "enabled", type: "boolean", example: true),
-        new OA\Property(property: "last_fetched_at", type: "string", format: "date-time", nullable: true),
-        new OA\Property(property: "created_at", type: "string", format: "date-time"),
-        new OA\Property(property: "updated_at", type: "string", format: "date-time"),
-        new OA\Property(property: "items_count", type: "integer", example: 10),
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'string', example: 'Tech News'),
+        new OA\Property(property: 'url', type: 'string', example: 'https://example.com/feed.xml'),
+        new OA\Property(property: 'enabled', type: 'boolean', example: true),
+        new OA\Property(property: 'last_fetched_at', type: 'string', format: 'date-time', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'items_count', type: 'integer', example: 10),
     ]
 )]
 class RssFeedResource extends JsonResource
@@ -40,4 +40,3 @@ class RssFeedResource extends JsonResource
         ];
     }
 }
-

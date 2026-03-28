@@ -12,7 +12,7 @@ class FetchRssFeedsCommand extends Command
     protected $signature = 'rss-watcher:fetch';
 
     public function __construct(
-        protected RssFeedRepositoryInterface     $rssFeedRepository,
+        protected RssFeedRepositoryInterface $rssFeedRepository,
         protected RssFeedItemRepositoryInterface $rssFeedItemRepository
     ) {
         $this->description = __('rss-watcher::common.console_fetch_description');

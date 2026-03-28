@@ -2,7 +2,6 @@
 
 namespace Molitor\RssWatcher\Filament\Resources;
 
-use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -13,10 +12,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Molitor\RssWatcher\Filament\Resources\RssFeedResource\Pages;
 use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Services\RssWatcherService;
-use Illuminate\Database\Eloquent\Collection;
 
 class RssFeedResource extends Resource
 {

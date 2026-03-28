@@ -17,4 +17,3 @@ class RssFeedCollection extends ResourceCollection
         return parent::toArray($request);
     }
 }
-

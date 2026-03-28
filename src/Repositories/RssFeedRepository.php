@@ -11,7 +11,7 @@ class RssFeedRepository implements RssFeedRepositoryInterface
 
     public function __construct()
     {
-        $this->rssFeed = new RssFeed();
+        $this->rssFeed = new RssFeed;
     }
 
     public function all(): Collection

@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use OpenApi\Attributes as OA;
 
 #[OA\Schema(
-    schema: "RssFeedRequest",
-    required: ["name", "url"],
+    schema: 'RssFeedRequest',
+    required: ['name', 'url'],
     properties: [
-        new OA\Property(property: "name", type: "string", example: "Tech News"),
-        new OA\Property(property: "url", type: "string", format: "url", example: "https://example.com/feed.xml"),
-        new OA\Property(property: "enabled", type: "boolean", example: true),
+        new OA\Property(property: 'name', type: 'string', example: 'Tech News'),
+        new OA\Property(property: 'url', type: 'string', format: 'url', example: 'https://example.com/feed.xml'),
+        new OA\Property(property: 'enabled', type: 'boolean', example: true),
     ]
 )]
 class RssFeedRequest extends FormRequest
@@ -40,4 +40,3 @@ class RssFeedRequest extends FormRequest
         return $rules;
     }
 }
-

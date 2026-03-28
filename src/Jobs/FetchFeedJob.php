@@ -7,8 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Molitor\RssWatcher\Services\RssWatcherService;
 use Molitor\RssWatcher\Repositories\RssFeedRepositoryInterface;
+use Molitor\RssWatcher\Services\RssWatcherService;
 
 class FetchFeedJob implements ShouldQueue
 {
@@ -16,8 +16,7 @@ class FetchFeedJob implements ShouldQueue
 
     public function __construct(
         protected int $feedId
-    ) {
-    }
+    ) {}
 
     public function handle(RssWatcherService $service, RssFeedRepositoryInterface $repository): void
     {
