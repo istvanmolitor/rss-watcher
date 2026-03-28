@@ -33,9 +33,9 @@ class RssFeedResource extends JsonResource
             'name' => $this->name,
             'url' => $this->url,
             'enabled' => $this->enabled,
-            'last_fetched_at' => $this->last_fetched_at?->toIso8601String(),
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'last_fetched_at' => $this->last_fetched_at?->toDateTimeString(),
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
             'items_count' => $this->whenCounted('items'),
         ];
     }

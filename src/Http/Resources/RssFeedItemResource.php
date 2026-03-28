@@ -43,9 +43,9 @@ class RssFeedItemResource extends JsonResource
             'link' => $this->link,
             'description' => $this->description,
             'image' => $this->image,
-            'published_at' => $this->published_at?->toIso8601String(),
-            'created_at' => $this->created_at->toIso8601String(),
-            'updated_at' => $this->updated_at->toIso8601String(),
+            'published_at' => $this->published_at?->toDateTimeString(),
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
             'feed' => new RssFeedResource($this->whenLoaded('feed')),
         ];
     }

@@ -32,7 +32,7 @@ class RssFeedItem extends Model
             $this->title .
             $this->link .
             $this->description .
-            ($this->published_at ? $this->published_at->toIso8601String() : '')
+            ($this->published_at ? $this->published_at->toDateTimeString() : '')
         );
     }
 }
