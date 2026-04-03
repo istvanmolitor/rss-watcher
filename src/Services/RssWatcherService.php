@@ -10,7 +10,6 @@ use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
 use Molitor\RssWatcher\Repositories\RssFeedRepositoryInterface;
-use PHPUnit\Framework\Exception;
 use willvincent\Feeds\Facades\FeedsFacade;
 
 class RssWatcherService
@@ -60,13 +59,13 @@ class RssWatcherService
 
     public function fetchFeed(RssFeed $feed): void
     {
-        $feedItems = FeedsFacade::make($feed->url);
-        if (! $feedItems) {
-            throw new Exception(__('rss-watcher::common.exception_invalid_feed', ['url' => $feed->url]));
-        }
-
         if (! $this->isFeedInitialized($feed)) {
             $this->initFeed($feed);
+        }
+
+        $feedItems = FeedsFacade::make($feed->url);
+        if (! $feedItems) {
+            throw new \Exception(__('rss-watcher::common.exception_invalid_feed', ['url' => $feed->url]));
         }
 
         $newGuids = [];
