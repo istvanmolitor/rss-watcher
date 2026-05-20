@@ -4,11 +4,21 @@ namespace Molitor\RssWatcher\database\seeders;
 
 use Illuminate\Database\Seeder;
 use Molitor\RssWatcher\Models\RssFeed;
+use Molitor\User\Exceptions\PermissionException;
+use Molitor\User\Services\AclManagementService;
 
 class NewsRssSeeder extends Seeder
 {
     public function run(): void
     {
+        try {
+            /** @var AclManagementService $aclService */
+            $aclService = app(AclManagementService::class);
+            $aclService->createPermission('rss_watcher', 'RSS feedek kezelese', 'admin');
+        } catch (PermissionException $e) {
+            $this->command->error($e->getMessage());
+        }
+
         $feeds = [
             // Hungarian news portals RSS feeds
             ['name' => 'Index - Belföld', 'url' => 'https://index.hu/belfold/rss/'],
