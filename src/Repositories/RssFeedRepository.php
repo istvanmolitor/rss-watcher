@@ -43,4 +43,15 @@ class RssFeedRepository implements RssFeedRepositoryInterface
             'enabled' => $enabled,
         ]);
     }
+
+    public function update(RssFeed $feed, string $name, string $url, bool $enabled): RssFeed
+    {
+        $feed->update([
+            'name' => $name,
+            'url' => $url,
+            'enabled' => $enabled,
+        ]);
+
+        return $feed;
+    }
 }

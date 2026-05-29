@@ -113,7 +113,14 @@ class RssFeedController extends Controller
     public function update(RssFeedRequest $request, int $id): JsonResponse
     {
         $feed = RssFeed::findOrFail($id);
-        $feed->update($request->validated());
+        $validated = $request->validated();
+
+        $feed = $this->rssFeedRepository->update(
+            $feed,
+            $validated['name'],
+            $validated['url'],
+            $validated['enabled'] ?? true,
+        );
 
         return response()->json(['data' => new RssFeedResource($feed)]);
     }

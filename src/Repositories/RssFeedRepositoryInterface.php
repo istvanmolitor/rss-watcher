@@ -17,4 +17,6 @@ interface RssFeedRepositoryInterface
     public function touchFetchedAt(RssFeed $feed): void;
 
     public function create(string $name, string $url, bool $enabled): RssFeed;
+
+    public function update(RssFeed $feed, string $name, string $url, bool $enabled): RssFeed;
 }
