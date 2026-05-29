@@ -8,12 +8,16 @@ use Illuminate\Routing\Controller;
 use Molitor\RssWatcher\Http\Requests\RssFeedRequest;
 use Molitor\RssWatcher\Http\Resources\RssFeedResource;
 use Molitor\RssWatcher\Models\RssFeed;
+use Molitor\RssWatcher\Repositories\RssFeedRepositoryInterface;
 use Molitor\RssWatcher\Services\RssWatcherService;
 use OpenApi\Attributes as OA;
 
 class RssFeedController extends Controller
 {
-    public function __construct(private RssWatcherService $rssWatcherService) {}
+    public function __construct(
+        private RssWatcherService $rssWatcherService,
+        private RssFeedRepositoryInterface $rssFeedRepository
+    ) {}
 
     #[OA\Get(
         path: '/api/rss-watcher/feeds',
@@ -84,7 +88,13 @@ class RssFeedController extends Controller
     )]
     public function store(RssFeedRequest $request): JsonResponse
     {
-        $feed = RssFeed::create($request->validated());
+        $validated = $request->validated();
+
+        $feed = $this->rssFeedRepository->create(
+            $validated['name'],
+            $validated['url'],
+            $validated['enabled'] ?? true,
+        );
 
         return response()->json(['data' => new RssFeedResource($feed)], 201);
     }

@@ -34,4 +34,13 @@ class RssFeedRepository implements RssFeedRepositoryInterface
     {
         return $this->rssFeed->find($id);
     }
+
+    public function create(string $name, string $url, bool $enabled): RssFeed
+    {
+        return $this->rssFeed->create([
+            'name' => $name,
+            'url' => $url,
+            'enabled' => $enabled,
+        ]);
+    }
 }
