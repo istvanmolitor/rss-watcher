@@ -6,7 +6,7 @@ use Molitor\RssWatcher\Http\Controllers\RssFeedItemController;
 
 // RSS Watcher routes
 Route::prefix('rss-watcher')
-    ->middleware(['api', 'auth:sanctum'])
+    ->middleware(['api', 'auth:sanctum', 'permission:rss_watcher'])
     ->name('rss-watcher.')
     ->group(function () {
         // RSS Feeds
