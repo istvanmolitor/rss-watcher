@@ -36,6 +36,11 @@ class RssFeedItemDataTable extends DataTable
         return $this->request->integer('per_page', 15);
     }
 
+    protected function getSearchPlaceholder(): string
+    {
+        return 'Keresés cím vagy leírás alapján...';
+    }
+
     protected function initColumns(): void
     {
         $this->addColumn('title')

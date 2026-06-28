@@ -35,6 +35,11 @@ class RssFeedDataTable extends DataTable
         return $this->request->integer('per_page', 15);
     }
 
+    protected function getSearchPlaceholder(): string
+    {
+        return 'Keresés RSS feed alapján...';
+    }
+
     protected function initColumns(): void
     {
         $this->addColumn('name')
