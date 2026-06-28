@@ -4,7 +4,9 @@ namespace Molitor\RssWatcher\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
+use Molitor\RssWatcher\DataTables\RssFeedDataTable;
 use Molitor\RssWatcher\Http\Requests\RssFeedRequest;
 use Molitor\RssWatcher\Http\Resources\RssFeedResource;
 use Molitor\RssWatcher\Models\RssFeed;
@@ -28,35 +30,9 @@ class RssFeedController extends Controller
             new OA\Response(response: 200, description: 'Success'),
         ]
     )]
-    public function index(Request $request): JsonResponse
+    public function index(RssFeedDataTable $dataTable): AnonymousResourceCollection
     {
-        $query = RssFeed::query();
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('url', 'like', "%{$search}%");
-            });
-        }
-        $sortField = $request->input('sort', 'id');
-        $sortDirection = $request->input('direction', 'desc');
-        $query->orderBy($sortField, $sortDirection);
-        $perPage = $request->input('per_page', 15);
-        $feeds = $query->paginate($perPage);
-
-        return response()->json([
-            'data' => RssFeedResource::collection($feeds->items()),
-            'meta' => [
-                'current_page' => $feeds->currentPage(),
-                'last_page' => $feeds->lastPage(),
-                'per_page' => $feeds->perPage(),
-                'total' => $feeds->total(),
-            ],
-            'filters' => [
-                'search' => $search,
-                'sort' => $sortField,
-                'direction' => $sortDirection,
-            ],
-        ]);
+        return $dataTable->getResponse();
     }
 
     #[OA\Get(

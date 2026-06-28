@@ -3,8 +3,9 @@
 namespace Molitor\RssWatcher\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
+use Molitor\RssWatcher\DataTables\RssFeedItemDataTable;
 use Molitor\RssWatcher\Http\Resources\RssFeedItemResource;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use OpenApi\Attributes as OA;
@@ -86,47 +87,9 @@ class RssFeedItemController extends Controller
             ),
         ]
     )]
-    public function index(Request $request): JsonResponse
+    public function index(RssFeedItemDataTable $dataTable): AnonymousResourceCollection
     {
-        $query = RssFeedItem::query()->with('feed');
-
-        // Filter by feed
-        if ($feedId = $request->input('feed_id')) {
-            $query->where('rss_feed_id', $feedId);
-        }
-
-        // Search
-        if ($search = $request->input('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Sort
-        $sortField = $request->input('sort', 'published_at');
-        $sortDirection = $request->input('direction', 'desc');
-        $query->orderBy($sortField, $sortDirection);
-
-        // Paginate
-        $perPage = $request->input('per_page', 15);
-        $items = $query->paginate($perPage);
-
-        return response()->json([
-            'data' => RssFeedItemResource::collection($items),
-            'meta' => [
-                'current_page' => $items->currentPage(),
-                'last_page' => $items->lastPage(),
-                'per_page' => $items->perPage(),
-                'total' => $items->total(),
-            ],
-            'filters' => [
-                'feed_id' => $feedId ?? null,
-                'search' => $search ?? null,
-                'sort' => $sortField,
-                'direction' => $sortDirection,
-            ],
-        ]);
+        return $dataTable->getResponse();
     }
 
     #[OA\Get(
