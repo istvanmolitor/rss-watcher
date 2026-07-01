@@ -10,7 +10,7 @@ use Molitor\RssWatcher\Models\RssFeed;
 use Molitor\RssWatcher\Models\RssFeedItem;
 use Molitor\RssWatcher\Repositories\RssFeedItemRepositoryInterface;
 use Molitor\RssWatcher\Repositories\RssFeedRepositoryInterface;
-use willvincent\Feeds\Facades\FeedsFacade;
+use SimplePie\SimplePie;
 
 class RssWatcherService
 {
@@ -63,8 +63,11 @@ class RssWatcherService
             $this->initFeed($feed);
         }
 
-        $feedItems = FeedsFacade::make($feed->url);
-        if (! $feedItems) {
+        $feedItems = new SimplePie();
+        $feedItems->set_feed_url($feed->url);
+        $feedItems->enable_cache(false);
+        $feedItems->init();
+        if ($feedItems->error()) {
             throw new \Exception(__('rss-watcher::common.exception_invalid_feed', ['url' => $feed->url]));
         }
 
